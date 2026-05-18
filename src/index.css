@@ -1,1 +1,66 @@
 @import "tailwindcss";
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: sans-serif;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  min-height: 100%;
+  background: #050816;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+}
+
+/* SCROLLBAR HIDE */
+::-webkit-scrollbar {
+  width: 0px;
+}
+
+/* PREMIUM BG */
+body {
+  background: linear-gradient(180deg, #050816 0%, #0f172a 40%, #111827 100%);
+  color: white;
+}
+
+/* INPUT */
+input,
+textarea {
+  color: white;
+  border: none;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* BUTTON */
+button {
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:active {
+  transform: scale(0.97);
+}
+
+/* IMAGE */
+img {
+  user-select: none;
+}
+
+/* HORIZONTAL SCROLL HIDE */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

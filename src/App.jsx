@@ -1,4 +1,5 @@
 import { useState } from "react";
+
 import {
   FaHome,
   FaHeart,
@@ -15,7 +16,42 @@ function App() {
   const [selectedJob, setSelectedJob] = useState("");
   const [searchText, setSearchText] = useState("");
 
-  // SAVE / UNSAVE
+  // IMAGES
+  const images = [
+    "https://images.unsplash.com/photo-1498050108023-c5249f4df085",
+    "https://images.unsplash.com/photo-1515879218367-8466d910aaa4",
+    "https://images.unsplash.com/photo-1522202176988-66273c2fd55f",
+    "https://images.unsplash.com/photo-1552664730-d307ca884978",
+    "https://images.unsplash.com/photo-1497366754035-f200968a6e72",
+  ];
+
+  // JOBS
+  const jobs = Array.from({ length: 40 }).map((_, i) => ({
+    id: i + 1,
+
+    role: [
+      "Frontend Dev",
+      "Backend Dev",
+      "UI UX",
+      "Data Analyst",
+      "DevOps",
+      "Full Stack",
+      "Mobile Dev",
+      "React Dev",
+      "AI Engineer",
+      "Cloud Engineer",
+    ][i % 10],
+
+    company: ["Google", "Amazon", "Microsoft", "Netflix", "Infosys"][i % 5],
+
+    location: ["Mumbai", "Pune", "Bangalore", "Delhi", "Hyderabad"][i % 5],
+
+    salary: `₹${6 + (i % 20)} LPA`,
+
+    image: images[i % 5],
+  }));
+
+  // SAVE JOB
   const toggleSaveJob = (job) => {
     const exists = savedJobs.find((j) => j.id === job.id);
 
@@ -26,26 +62,7 @@ function App() {
     }
   };
 
-  // 70 JOBS
-  const jobs = Array.from({ length: 70 }).map((_, i) => ({
-    id: i + 1,
-    role: [
-      "Frontend Developer",
-      "Backend Developer",
-      "UI/UX Designer",
-      "Data Analyst",
-      "DevOps Engineer",
-      "Full Stack Developer",
-      "Mobile App Developer",
-    ][i % 7],
-    company: ["Google", "Amazon", "Microsoft", "Netflix", "TCS", "Infosys"][
-      i % 6
-    ],
-    location: ["Mumbai", "Pune", "Bangalore", "Hyderabad", "Delhi"][i % 5],
-    salary: `₹${4 + (i % 30)} LPA`,
-  }));
-
-  // SEARCH FILTER
+  // SEARCH
   const filteredJobs = jobs.filter(
     (job) =>
       job.role.toLowerCase().includes(searchText.toLowerCase()) ||
@@ -53,165 +70,267 @@ function App() {
   );
 
   return (
-    <div className="bg-[#070b1a] min-h-screen flex justify-center">
-      <div className="w-full max-w-[430px] min-h-screen bg-[#0f172a] text-white p-5 pb-28">
-        {/* HOME */}
-        {activeTab === "home" && (
-          <>
-            <h1 className="text-4xl font-bold">Find Dream Job 🚀</h1>
+    <div className="min-h-screen bg-[#050816] text-white overflow-x-hidden">
+      {/* TOP */}
+      <div className="bg-gradient-to-r from-violet-700 via-fuchsia-600 to-indigo-700 p-6 rounded-b-[35px] shadow-2xl">
+        <h1 className="text-5xl font-extrabold leading-tight">
+          Find Your <br /> Dream Job 🚀
+        </h1>
 
-            <p className="text-gray-400 mt-2">
-              Apply, save and grow your career
-            </p>
+        <p className="mt-2 text-white/80 text-lg">
+          Discover premium opportunities
+        </p>
 
-            {/* SEARCH */}
-            <div className="bg-white/10 mt-5 p-3 rounded-xl flex gap-2">
-              <FaSearch />
-              <input
-                value={searchText}
-                onChange={(e) => setSearchText(e.target.value)}
-                className="bg-transparent outline-none w-full"
-                placeholder="Search jobs..."
-              />
-            </div>
+        {/* SEARCH */}
+        <div className="bg-white/15 mt-5 p-4 rounded-2xl flex items-center gap-3 backdrop-blur-xl border border-white/10">
+          <FaSearch className="text-white/70 text-lg" />
 
-            {/* JOB LIST */}
-            <div className="mt-6 space-y-4">
-              {filteredJobs.map((job) => (
+          <input
+            value={searchText}
+            onChange={(e) => setSearchText(e.target.value)}
+            type="text"
+            placeholder="Search jobs..."
+            className="bg-transparent outline-none w-full placeholder:text-white/60"
+          />
+        </div>
+      </div>
+
+      {/* HOME */}
+      {activeTab === "home" && (
+        <div className="px-5 pt-7 pb-32 space-y-8">
+          {Array.from({
+            length: Math.ceil(filteredJobs.length / 5),
+          }).map((_, rowIndex) => (
+            <div
+              key={rowIndex}
+              className="flex gap-8 overflow-x-auto pb-4 pt-2"
+            >
+              {filteredJobs.slice(rowIndex * 5, rowIndex * 5 + 5).map((job) => (
                 <div
                   key={job.id}
-                  className="bg-white/10 p-4 rounded-xl border border-white/10"
+                  className="min-w-[250px] bg-gradient-to-br from-[#111827] to-[#1e293b] rounded-[30px] overflow-hidden border border-white/10 shadow-2xl flex-shrink-0 hover:scale-[1.02] transition duration-300"
                 >
-                  <div className="flex justify-between">
-                    <h2 className="font-bold">{job.role}</h2>
+                  {/* IMAGE */}
+                  <img
+                    src={job.image}
+                    alt="job"
+                    className="w-full h-40 object-cover"
+                  />
 
-                    <FaHeart
-                      onClick={() => toggleSaveJob(job)}
-                      className={
-                        savedJobs.find((j) => j.id === job.id)
-                          ? "text-red-500"
-                          : "text-gray-400"
-                      }
-                    />
+                  {/* CONTENT */}
+                  <div className="p-5">
+                    {/* TOP */}
+                    <div className="flex justify-between items-start">
+                      <h2 className="text-2xl font-bold">{job.role}</h2>
+
+                      <FaHeart
+                        onClick={() => toggleSaveJob(job)}
+                        className={`cursor-pointer text-2xl transition ${
+                          savedJobs.find((j) => j.id === job.id)
+                            ? "text-red-500"
+                            : "text-white/40"
+                        }`}
+                      />
+                    </div>
+
+                    {/* COMPANY */}
+                    <div className="flex items-center gap-2 text-gray-300 mt-4">
+                      <FaBriefcase className="text-violet-400" />
+                      <span>{job.company}</span>
+                    </div>
+
+                    {/* LOCATION */}
+                    <div className="flex items-center gap-2 text-gray-300 mt-2">
+                      <FaMapMarkerAlt className="text-pink-400" />
+                      <span>{job.location}</span>
+                    </div>
+
+                    {/* SALARY */}
+                    <h3 className="text-cyan-400 text-2xl font-bold mt-5">
+                      {job.salary}
+                    </h3>
+
+                    {/* BUTTON */}
+                    <button
+                      onClick={() => {
+                        setSelectedJob(job.role);
+                        setShowForm(true);
+                      }}
+                      className="w-full mt-5 bg-gradient-to-r from-pink-500 via-violet-500 to-indigo-500 py-3 rounded-2xl font-bold hover:opacity-90"
+                    >
+                      Apply Now
+                    </button>
                   </div>
-
-                  <div className="flex items-center gap-2 text-gray-400 mt-2">
-                    <FaBriefcase /> {job.company}
-                  </div>
-
-                  <div className="flex items-center gap-2 text-gray-400">
-                    <FaMapMarkerAlt /> {job.location}
-                  </div>
-
-                  <p className="text-violet-400 mt-2 font-bold">{job.salary}</p>
-
-                  <button
-                    onClick={() => {
-                      setSelectedJob(job.role);
-                      setShowForm(true);
-                    }}
-                    className="w-full mt-3 bg-violet-600 p-3 rounded-xl"
-                  >
-                    Apply Now
-                  </button>
                 </div>
               ))}
             </div>
-          </>
-        )}
-
-        {/* SAVED */}
-        {activeTab === "saved" && (
-          <div>
-            <h1 className="text-2xl font-bold">Saved Jobs ❤️</h1>
-
-            <div className="mt-5 space-y-3">
-              {savedJobs.length === 0 ? (
-                <p className="text-gray-400">No saved jobs</p>
-              ) : (
-                savedJobs.map((job) => (
-                  <div key={job.id} className="bg-white/10 p-3 rounded-xl">
-                    <h2>{job.role}</h2>
-                    <p className="text-gray-400">{job.company}</p>
-                  </div>
-                ))
-              )}
-            </div>
-          </div>
-        )}
-
-        {/* SEARCH TAB */}
-        {activeTab === "search" && (
-          <div>
-            <h1 className="text-2xl font-bold">Search Jobs 🔍</h1>
-
-            <div className="bg-white/10 p-3 rounded-xl flex gap-2 mt-5">
-              <FaSearch />
-              <input
-                value={searchText}
-                onChange={(e) => setSearchText(e.target.value)}
-                className="bg-transparent outline-none w-full"
-                placeholder="Type job or company..."
-              />
-            </div>
-          </div>
-        )}
-
-        {/* PROFILE */}
-        {activeTab === "profile" && (
-          <div className="text-center mt-10">
-            <div className="w-20 h-20 bg-violet-600 rounded-full mx-auto"></div>
-            <h2 className="mt-3 text-xl font-bold">User</h2>
-            <p className="text-gray-400">Job Seeker</p>
-          </div>
-        )}
-
-        {/* APPLY FORM */}
-        {showForm && (
-          <div className="fixed inset-0 bg-black/70 flex justify-center items-center p-5">
-            <div className="bg-[#111827] p-5 rounded-xl w-full max-w-[350px]">
-              <h2 className="text-xl font-bold">Apply for {selectedJob}</h2>
-
-              <input
-                className="w-full mt-4 p-3 bg-white/10 rounded-xl"
-                placeholder="Name"
-              />
-              <input
-                className="w-full mt-3 p-3 bg-white/10 rounded-xl"
-                placeholder="Email"
-              />
-              <input
-                className="w-full mt-3 p-3 bg-white/10 rounded-xl"
-                placeholder="Phone"
-              />
-
-              <button
-                onClick={() => {
-                  alert("Applied Successfully 🚀");
-                  setShowForm(false);
-                }}
-                className="w-full mt-5 bg-violet-600 p-3 rounded-xl"
-              >
-                Submit
-              </button>
-
-              <button
-                onClick={() => setShowForm(false)}
-                className="w-full mt-2 bg-red-500 p-3 rounded-xl"
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        )}
-
-        {/* BOTTOM NAV */}
-        <div className="fixed bottom-5 left-1/2 -translate-x-1/2 w-[90%] max-w-[390px] bg-white/10 p-4 rounded-xl flex justify-around">
-          <FaHome onClick={() => setActiveTab("home")} />
-          <FaSearch onClick={() => setActiveTab("search")} />
-          <FaHeart onClick={() => setActiveTab("saved")} />
-          <FaUser onClick={() => setActiveTab("profile")} />
+          ))}
         </div>
+      )}
+
+      {/* SEARCH TAB */}
+      {activeTab === "search" && (
+        <div className="p-5 pb-32">
+          <h1 className="text-3xl font-bold mb-6">Search Jobs 🔍</h1>
+
+          <div className="space-y-4">
+            {filteredJobs.map((job) => (
+              <div
+                key={job.id}
+                className="bg-[#111827] p-5 rounded-2xl border border-white/10"
+              >
+                <h2 className="text-2xl font-bold">{job.role}</h2>
+
+                <p className="text-gray-400 mt-2">
+                  {job.company} • {job.location}
+                </p>
+
+                <button
+                  onClick={() => {
+                    setSelectedJob(job.role);
+                    setShowForm(true);
+                  }}
+                  className="mt-4 bg-violet-600 px-5 py-3 rounded-xl"
+                >
+                  Apply
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* SAVED */}
+      {activeTab === "saved" && (
+        <div className="p-5 pb-32">
+          <h1 className="text-3xl font-bold">Saved Jobs ❤️</h1>
+
+          <div className="space-y-4 mt-6">
+            {savedJobs.length === 0 ? (
+              <p className="text-gray-400">No saved jobs</p>
+            ) : (
+              savedJobs.map((job) => (
+                <div
+                  key={job.id}
+                  className="bg-[#111827] p-5 rounded-2xl border border-white/10"
+                >
+                  <h2 className="text-2xl font-bold">{job.role}</h2>
+
+                  <p className="text-gray-400 mt-2">
+                    {job.company} • {job.location}
+                  </p>
+
+                  <p className="text-cyan-400 font-bold mt-3 text-xl">
+                    {job.salary}
+                  </p>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* PROFILE */}
+      {activeTab === "profile" && (
+        <div className="p-5 pb-32">
+          <div className="bg-gradient-to-br from-violet-700 to-indigo-700 rounded-[35px] p-8 text-center">
+            <img
+              src="https://cdn-icons-png.flaticon.com/512/3135/3135715.png"
+              alt="profile"
+              className="w-32 h-32 rounded-full mx-auto border-4 border-white object-cover"
+            />
+
+            <h1 className="text-4xl font-bold mt-5">Ankita</h1>
+
+            <p className="text-white/80 mt-2 text-lg">Frontend Developer</p>
+
+            <button className="mt-6 bg-white text-violet-700 px-6 py-3 rounded-2xl font-bold">
+              Edit Profile
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* APPLY FORM */}
+      {showForm && (
+        <div className="fixed inset-0 bg-black/70 flex justify-center items-center p-5 z-50">
+          <div className="bg-[#111827] w-full max-w-[380px] rounded-[35px] p-6 border border-white/10">
+            <h2 className="text-3xl font-bold">Apply for {selectedJob}</h2>
+
+            <input
+              type="text"
+              placeholder="Full Name"
+              className="w-full mt-5 bg-white/10 p-4 rounded-2xl outline-none"
+            />
+
+            <input
+              type="email"
+              placeholder="Email"
+              className="w-full mt-4 bg-white/10 p-4 rounded-2xl outline-none"
+            />
+
+            <input
+              type="text"
+              placeholder="Phone Number"
+              className="w-full mt-4 bg-white/10 p-4 rounded-2xl outline-none"
+            />
+
+            <textarea
+              placeholder="Why should we hire you?"
+              className="w-full mt-4 bg-white/10 p-4 rounded-2xl outline-none h-28"
+            ></textarea>
+
+            <button
+              onClick={() => {
+                alert("Application Submitted 🚀");
+                setShowForm(false);
+              }}
+              className="w-full mt-5 bg-gradient-to-r from-pink-500 via-violet-500 to-indigo-500 p-4 rounded-2xl font-bold"
+            >
+              Submit Application
+            </button>
+
+            <button
+              onClick={() => setShowForm(false)}
+              className="w-full mt-3 bg-red-500 p-4 rounded-2xl font-bold"
+            >
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* BOTTOM NAV */}
+      <div className="fixed bottom-5 left-1/2 -translate-x-1/2 w-[92%] bg-white/10 backdrop-blur-2xl border border-white/10 rounded-[30px] p-5 flex justify-around text-2xl z-50">
+        <FaHome
+          onClick={() => setActiveTab("home")}
+          className={`cursor-pointer ${
+            activeTab === "home" ? "text-violet-400 scale-125" : "text-white/60"
+          }`}
+        />
+
+        <FaSearch
+          onClick={() => setActiveTab("search")}
+          className={`cursor-pointer ${
+            activeTab === "search" ? "text-cyan-400 scale-125" : "text-white/60"
+          }`}
+        />
+
+        <FaHeart
+          onClick={() => setActiveTab("saved")}
+          className={`cursor-pointer ${
+            activeTab === "saved" ? "text-pink-400 scale-125" : "text-white/60"
+          }`}
+        />
+
+        <FaUser
+          onClick={() => setActiveTab("profile")}
+          className={`cursor-pointer ${
+            activeTab === "profile"
+              ? "text-yellow-400 scale-125"
+              : "text-white/60"
+          }`}
+        />
       </div>
     </div>
   );
